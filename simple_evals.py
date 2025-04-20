@@ -140,6 +140,29 @@ def main():
             model="claude-3-opus-20240229",
             system_message=CLAUDE_SYSTEM_MESSAGE_LMSYS,
         ),
+       # custom models:
+        "nemotron-super-49b": ChatCompletionSampler(
+            model="Nemotron Super 49B",
+            system_message="detailed thinking off"
+        ),
+        "nemotron-super-49b-reasoning": ChatCompletionSampler(
+            model="Nemotron Super 49B",
+            system_message="detailed thinking on"
+        ),
+        "nemotron-ultra-253b": ChatCompletionSampler(
+            model="Nemotron Ultra 253B",
+            system_message="detailed thinking off"
+        ),
+        "nemotron-ultra-253b-reasoning": ChatCompletionSampler(
+            model="Nemotron Ultra 253B",
+            system_message="detailed thinking on"
+        ),
+        "gemma3-27b": ChatCompletionSampler(
+            model="Gemma3 27B",
+        ),
+        "qwen2.5-coder-32b": ChatCompletionSampler(
+            model="Qwen2.5 Coder 32B",
+        ),
     }
 
     if args.list_models:
@@ -154,8 +177,8 @@ def main():
             return
         models = {args.model: models[args.model]}
 
-    grading_sampler = ChatCompletionSampler(model="gpt-4o")
-    equality_checker = ChatCompletionSampler(model="gpt-4-turbo-preview")
+#    grading_sampler = ChatCompletionSampler("Nemotron Super 49B")
+#    equality_checker = ChatCompletionSampler("Nemotron Super 49B")
     # ^^^ used for fuzzy matching, just for math
 
     def get_evals(eval_name, debug_mode):
@@ -170,14 +193,14 @@ def main():
                 return MathEval(
                     equality_checker=equality_checker,
                     num_examples=num_examples,
-                    n_repeats=1 if debug_mode else 10,
+                    n_repeats=1 if debug_mode else 1,
                 )
             case "gpqa":
                 return GPQAEval(
-                    n_repeats=1 if debug_mode else 10, num_examples=num_examples
+                    n_repeats=1 if debug_mode else 1, num_examples=num_examples
                 )
             case "mgsm":
-                return MGSMEval(num_examples_per_lang=10 if debug_mode else 250)
+                return MGSMEval(num_examples_per_lang=10 if debug_mode else int(num_examples/10))
             case "drop":
                 return DropEval(
                     num_examples=10 if debug_mode else num_examples,
@@ -200,7 +223,8 @@ def main():
 
     evals = {
         eval_name: get_evals(eval_name, args.debug)
-        for eval_name in ["simpleqa", "mmlu", "math", "gpqa", "mgsm", "drop", "humaneval", "browsecomp"]
+#        for eval_name in ["simpleqa", "mmlu", "math", "gpqa", "mgsm", "drop", "humaneval", "browsecomp"]
+        for eval_name in ["mmlu", "gpqa", "mgsm", "drop", "humaneval"]
     }
     print(evals)
     debug_suffix = "_DEBUG" if args.debug else ""

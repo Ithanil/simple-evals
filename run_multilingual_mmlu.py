@@ -43,6 +43,29 @@ def main():
             model="o3-mini",
             reasoning_effort="low",
         ),
+       # custom models:
+        "nemotron-super-49b": ChatCompletionSampler(
+            model="Nemotron Super 49B",
+            system_message="detailed thinking off"
+        ),
+        "nemotron-super-49b-reasoning": ChatCompletionSampler(
+            model="Nemotron Super 49B",
+            system_message="detailed thinking on"
+        ),
+        "nemotron-ultra-253b": ChatCompletionSampler(
+            model="Nemotron Ultra 253B",
+            system_message="detailed thinking off"
+        ),
+        "nemotron-ultra-253b-reasoning": ChatCompletionSampler(
+            model="Nemotron Ultra 253B",
+            system_message="detailed thinking on"
+        ),
+        "gemma3-27b": ChatCompletionSampler(
+            model="Gemma3 27B",
+        ),
+        "qwen2.5-coder-32b": ChatCompletionSampler(
+            model="Qwen2.5 Coder 32B",
+        ),
     }
 
     def get_evals(eval_name):
