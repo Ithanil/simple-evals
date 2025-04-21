@@ -143,25 +143,31 @@ def main():
        # custom models:
         "nemotron-super-49b": ChatCompletionSampler(
             model="Nemotron Super 49B",
-            system_message="detailed thinking off"
+            system_message="detailed thinking off",
+            max_tokens=4096
         ),
         "nemotron-super-49b-reasoning": ChatCompletionSampler(
             model="Nemotron Super 49B",
-            system_message="detailed thinking on"
+            system_message="detailed thinking on",
+            max_tokens=16384
         ),
         "nemotron-ultra-253b": ChatCompletionSampler(
             model="Nemotron Ultra 253B",
-            system_message="detailed thinking off"
+            system_message="detailed thinking off",
+            max_tokens=4096
         ),
         "nemotron-ultra-253b-reasoning": ChatCompletionSampler(
             model="Nemotron Ultra 253B",
-            system_message="detailed thinking on"
+            system_message="detailed thinking on",
+            max_tokens=16384
         ),
         "gemma3-27b": ChatCompletionSampler(
             model="Gemma3 27B",
+            max_tokens=4096
         ),
         "qwen2.5-coder-32b": ChatCompletionSampler(
             model="Qwen2.5 Coder 32B",
+            max_tokens=4096
         ),
     }
 
