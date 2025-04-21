@@ -1,5 +1,6 @@
 import base64
 import time
+import re
 from typing import Any
 
 import openai
@@ -52,6 +53,11 @@ class ChatCompletionSampler(SamplerBase):
     def _pack_message(self, role: str, content: Any):
         return {"role": str(role), "content": content}
 
+    def remove_thinking(self, message):
+        pattern = '^<think>.*</think>'
+        result = re.sub(pattern, '', message.lstrip(), count=1, flags=re.DOTALL)
+        return result.lstrip()
+
     def __call__(self, message_list: MessageList) -> str:
         if self.system_message:
             message_list = [self._pack_message("system", self.system_message)] + message_list
@@ -64,7 +70,7 @@ class ChatCompletionSampler(SamplerBase):
                     temperature=self.temperature,
                     max_tokens=self.max_tokens,
                 )
-                return response.choices[0].message.content
+                return self.remove_thinking(response.choices[0].message.content)
             # NOTE: BadRequestError is triggered once for MMMU, please uncomment if you are reruning MMMU
             except openai.BadRequestError as e:
                 print("Bad Request Error", e)
