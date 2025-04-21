@@ -6,6 +6,16 @@ import math
 import os
 from tabulate import tabulate
 
+def corrected_sample_std_dev(measurements):
+    if len(measurements) < 2:
+        raise ValueError("At least two measurements are required to compute the sample standard deviation.")
+    mean = sum(measurements) / len(measurements)
+    squared_diffs = [(x - mean) ** 2 for x in measurements]
+    variance = sum(squared_diffs) / (len(measurements) - 1)
+    std_dev = math.sqrt(variance)
+
+    return std_dev
+
 parser = argparse.ArgumentParser(description='Run LLM evaluation multiple times and aggregate results.')
 parser.add_argument('--api-url', required=True, help='OpenAI base URL')
 parser.add_argument('--api-key', required=True, help='OpenAI API key')
@@ -57,9 +67,9 @@ for eval_type in results:
         values = [v for v, s in results[eval_type][metric]]
         stds = [s for v, s in results[eval_type][metric]]
         avg = sum(values) / len(values)
-        propagated_std = math.sqrt(sum(s**2 for s in stds) / len(stds))
+        avg_std = corrected_sample_std_dev(values) / math.sqrt(len(values))
         output_json[eval_type][metric] = avg
-        output_json[eval_type][f"{metric}:std"] = propagated_std
+        output_json[eval_type][f"{metric}:std"] = avg_std
         output_json[eval_type][f"{metric}:results"] = values
         output_json[eval_type][f"{metric}:std:results"] = stds
 
