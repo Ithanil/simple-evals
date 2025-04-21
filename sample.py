@@ -38,6 +38,9 @@ for run in range(args.num_runs):
         env=env,
         check=True
     )
+    run_results_path = f"results/{args.model}_run_{run}"
+    if not os.path.exists(run_results_path):
+        os.mkdir(run_results_path)
     pattern = f"results/*_{args.model}.json"
     files = glob.glob(pattern)
     for file in files:
@@ -58,7 +61,7 @@ for run in range(args.num_runs):
                 if metric not in results[eval_type]:
                     results[eval_type][metric] = []
                 results[eval_type][metric].append((value, std))
-        os.remove(file)
+        os.rename(file, f"{run_results_path}/{os.path.basename(file)}")
 
 output_json = {}
 for eval_type in results:
