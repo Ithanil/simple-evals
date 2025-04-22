@@ -40,18 +40,31 @@ def save_results(output_json, results_dir, model_name):
         json.dump(output_json, f, indent=2)
     print(f"Results saved to {output_filename}")
 
+def pretty_print_eval(eval_type):
+    """Pretty print eval name"""
+    if eval_type == "humaneval":
+        return "HumanEval"
+    else:
+        return eval_type.upper()
+
 def tabulate_results(output_json):
     """Print summary table"""
     table = []
     for eval_type in output_json:
-        if 'score' in output_json[eval_type]:
-            avg_score = output_json[eval_type]['score']
-            std_score = output_json[eval_type]['score:std']
-            table.append([eval_type, avg_score, std_score])
+        if eval_type != 'drop':
+            if 'score' in output_json[eval_type]:
+                avg_score = output_json[eval_type]['score'] * 100.
+                std_score = output_json[eval_type]['score:std'] * 100.
+                table.append([pretty_print_eval(eval_type), avg_score, std_score])
+        else:
+            if 'f1_score' in output_json[eval_type]: # to match what is reported by OpenAI
+                avg_score = output_json[eval_type]['f1_score']
+                std_score = output_json[eval_type]['f1_score:std']
+                table.append(['DROP (F1)', avg_score, std_score])
 
     table.sort(key=lambda x: x[0])
     print("\nScore averages and stds:")
-    print(tabulate(table, headers=['Evaluation Type', 'Average Score', 'Std Dev'], tablefmt='orgtbl'))
+    print(tabulate(table, headers=['Benchmark', 'Average Score', 'Standard Error'], tablefmt='orgtbl'))
 
 def load_results_from_runs(results_dir, model):
     """Reconstruct results dictionary from individual run files"""
