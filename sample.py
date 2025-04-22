@@ -8,7 +8,8 @@ from tabulate import tabulate
 
 def corrected_sample_std_dev(measurements):
     if len(measurements) < 2:
-        raise ValueError("At least two measurements are required to compute the sample standard deviation.")
+        print("Warning: At least two measurements are required to compute the sample standard deviation.")
+        return 0.
     mean = sum(measurements) / len(measurements)
     squared_diffs = [(x - mean) ** 2 for x in measurements]
     variance = sum(squared_diffs) / (len(measurements) - 1)
