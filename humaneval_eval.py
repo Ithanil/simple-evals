@@ -26,8 +26,8 @@ from .eval_types import Eval, EvalResult, SamplerBase, SingleEvalResult
 def evaluate_functional_correctness(
     sample: dict[str, str],
     completions: list[str],
-    n_workers: int = 4,
-    timeout: float = 3.0,
+    n_workers: int = 20,
+    timeout: float = 5.0,
 ):
     """
     Evaluates the functional correctness of generated samples, and writes
