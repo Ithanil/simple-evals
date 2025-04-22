@@ -1,21 +1,10 @@
 import argparse
 import subprocess
-import glob
 import json
-import math
 import os
-from tabulate import tabulate
+import glob
 
-def corrected_sample_std_dev(measurements):
-    if len(measurements) < 2:
-        print("Warning: At least two measurements are required to compute the sample standard deviation.")
-        return 0.
-    mean = sum(measurements) / len(measurements)
-    squared_diffs = [(x - mean) ** 2 for x in measurements]
-    variance = sum(squared_diffs) / (len(measurements) - 1)
-    std_dev = math.sqrt(variance)
-
-    return std_dev
+from sample_helpers import aggregate_results, save_results, tabulate_results
 
 parser = argparse.ArgumentParser(description='Run LLM evaluation multiple times and aggregate results.')
 parser.add_argument('--api-url', required=True, help='OpenAI base URL')
@@ -64,31 +53,6 @@ for run in range(args.num_runs):
                 results[eval_type][metric].append((value, std))
         os.rename(file, f"{run_results_path}/{os.path.basename(file)}")
 
-output_json = {}
-for eval_type in results:
-    output_json[eval_type] = {}
-    for metric in results[eval_type]:
-        values = [v for v, s in results[eval_type][metric]]
-        stds = [s for v, s in results[eval_type][metric]]
-        avg = sum(values) / len(values)
-        avg_std = corrected_sample_std_dev(values) / math.sqrt(len(values))
-        output_json[eval_type][metric] = avg
-        output_json[eval_type][f"{metric}:std"] = avg_std
-        output_json[eval_type][f"{metric}:results"] = values
-        output_json[eval_type][f"{metric}:std:results"] = stds
-
-output_filename = f"results/{args.model}_results.json"
-with open(output_filename, 'w') as f:
-    json.dump(output_json, f, indent=2)
-print(f"Results saved to {output_filename}")
-
-table = []
-for eval_type in output_json:
-    if 'score' in output_json[eval_type]:
-        avg_score = output_json[eval_type]['score']
-        std_score = output_json[eval_type]['score:std']
-        table.append([eval_type, avg_score, std_score])
-
-table.sort(key=lambda x: x[0])
-print("\nScore averages and stds:")
-print(tabulate(table, headers=['Evaluation Type', 'Average Score', 'Std Dev'], tablefmt='orgtbl'))
+output_json = aggregate_results(results)
+save_results(output_json, "results", args.model)
+tabulate_results(output_json)
