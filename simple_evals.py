@@ -162,6 +162,15 @@ def main():
             system_message="detailed thinking on",
             max_tokens=16384
         ),
+        "nemotron-super-49b-1.5": ChatCompletionSampler(
+            model="Nemotron Super 49B",
+            system_message="/no_think",
+            max_tokens=4096
+        ),
+        "nemotron-super-49b-1.5-reasoning": ChatCompletionSampler(
+            model="Nemotron Super 49B",
+            max_tokens=16384
+        ),
         "gemma3-27b": ChatCompletionSampler(
             model="Gemma3 27B",
             max_tokens=4096
@@ -169,6 +178,22 @@ def main():
         "qwen2.5-coder-32b": ChatCompletionSampler(
             model="Qwen2.5 Coder 32B",
             max_tokens=4096
+        ),
+        "qwen3-coder-30b": ChatCompletionSampler(
+            model="Qwen3 Coder 30B",
+            max_tokens=4096
+        ),
+        "qwen3-235b": ChatCompletionSampler(
+            model="Qwen3 235B",
+            max_tokens=4096
+        ),
+        "qwen3-235b-thinking": ChatCompletionSampler(
+            model="Qwen3 235B (Reasoning)",
+            max_tokens=16384
+        ),
+        "qwen3-235b-thinking-long": ChatCompletionSampler(
+            model="Qwen3 235B (Reasoning)",
+            max_tokens=32768
         ),
     }
 
