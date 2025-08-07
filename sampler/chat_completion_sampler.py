@@ -70,7 +70,10 @@ class ChatCompletionSampler(SamplerBase):
                     temperature=self.temperature,
                     max_tokens=self.max_tokens,
                 )
-                return self.remove_thinking(response.choices[0].message.content)
+                content = response.choices[0].message.content
+                if content:
+                    content = self.remove_thinking(content)
+                return content
             # NOTE: BadRequestError is triggered once for MMMU, please uncomment if you are reruning MMMU
             except openai.BadRequestError as e:
                 print("Bad Request Error", e)
