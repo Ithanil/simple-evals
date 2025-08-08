@@ -121,7 +121,7 @@ def main():
             system_message=OPENAI_SYSTEM_MESSAGE_API,
             max_tokens=2048,
         ),
-        # GPT-4-turbo model 
+        # GPT-4-turbo model
          "gpt-4-turbo-2024-04-09": ChatCompletionSampler(
             model="gpt-4-turbo-2024-04-09",
             system_message=OPENAI_SYSTEM_MESSAGE_API,
@@ -194,6 +194,24 @@ def main():
         "qwen3-235b-thinking-long": ChatCompletionSampler(
             model="Qwen3 235B (Reasoning)",
             max_tokens=32768
+        ),
+        "qwen3-235b-thinking-long": ChatCompletionSampler(
+            model="Qwen3 235B (Reasoning)",
+            max_tokens=16384
+        ),
+        "gpt-oss-120b-low": ChatCompletionSampler(
+            model="GPT OSS 120B",
+            max_tokens=16384,
+            reasoning_effort="low"
+        ),
+        "gpt-oss-120b": ChatCompletionSampler(
+            model="GPT OSS 120B",
+            max_tokens=16384
+        ),
+        "gpt-oss-120b-high": ChatCompletionSampler(
+            model="GPT OSS 120B",
+            max_tokens=16384,
+            reasoning_effort="high"
         ),
     }
 
