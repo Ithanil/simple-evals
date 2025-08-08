@@ -26,6 +26,7 @@ class ChatCompletionSampler(SamplerBase):
         system_message: str | None = None,
         temperature: float | None = None,
         max_tokens: int = 1024,
+        reasoning_effort: str | None = None,
     ):
         self.api_key_name = "OPENAI_API_KEY"
         self.client = OpenAI()
@@ -34,6 +35,7 @@ class ChatCompletionSampler(SamplerBase):
         self.system_message = system_message
         self.temperature = temperature
         self.max_tokens = max_tokens
+        self.reasoning_effort = reasoning_effort
         self.image_format = "url"
 
     def _handle_image(
@@ -69,10 +71,13 @@ class ChatCompletionSampler(SamplerBase):
                     messages=message_list,
                     temperature=self.temperature,
                     max_tokens=self.max_tokens,
+                    reasoning_effort=self.reasoning_effort,
                 )
                 content = response.choices[0].message.content
                 if content:
                     content = self.remove_thinking(content)
+                else:
+                    content = ""
                 return content
             # NOTE: BadRequestError is triggered once for MMMU, please uncomment if you are reruning MMMU
             except openai.BadRequestError as e:
