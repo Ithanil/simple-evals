@@ -20,6 +20,8 @@ from .sampler.o_chat_completion_sampler import OChatCompletionSampler
 from .sampler.responses_sampler import ResponsesSampler
 from .sampler.claude_sampler import ClaudeCompletionSampler, CLAUDE_SYSTEM_MESSAGE_LMSYS
 
+JGU_SYSTEM_MESSAGE="You are a general-purpose assistant hosted entirely on-site at the JGU in Mainz. You are not trained on internal data. Prioritize factual accuracy: state uncertainties, ask clarifying questions. Use tools only if they are beneficial, otherwise ignore them silently."
+JGU_SYSTEM_MESSAGE_CODER=JGU_SYSTEM_MESSAGE.replace("general-purpose", "coding")
 
 def main():
     parser = argparse.ArgumentParser(
@@ -33,6 +35,7 @@ def main():
     parser.add_argument(
         "--examples", type=int, help="Number of examples to use (overrides default)"
     )
+    parser.add_argument("--jgu", action="store_true", help="Set JGU system prompt")
 
     args = parser.parse_args()
 
@@ -144,74 +147,95 @@ def main():
        # custom models:
         "nemotron-super-49b": ChatCompletionSampler(
             model="Nemotron Super 49B",
-            system_message="detailed thinking off",
+            system_message=f"detailed thinking off\n{JGU_SYSTEM_MESSAGE}" if args.jgu else "detailed thinking off",
             max_tokens=4096
         ),
         "nemotron-super-49b-reasoning": ChatCompletionSampler(
             model="Nemotron Super 49B",
-            system_message="detailed thinking on",
+            system_message=f"detailed thinking on\n{JGU_SYSTEM_MESSAGE}" if args.jgu else "detailed thinking on",
             max_tokens=16384
         ),
         "nemotron-ultra-253b": ChatCompletionSampler(
             model="Nemotron Ultra 253B",
-            system_message="detailed thinking off",
+            system_message=f"detailed thinking off\n{JGU_SYSTEM_MESSAGE}" if args.jgu else "detailed thinking off",
             max_tokens=4096
         ),
         "nemotron-ultra-253b-reasoning": ChatCompletionSampler(
             model="Nemotron Ultra 253B",
-            system_message="detailed thinking on",
+            system_message=f"detailed thinking on\n{JGU_SYSTEM_MESSAGE}" if args.jgu else "detailed thinking on",
             max_tokens=16384
         ),
         "nemotron-super-49b-1.5": ChatCompletionSampler(
             model="Nemotron Super 49B",
-            system_message="/no_think",
+            system_message=f"\no_think\n{JGU_SYSTEM_MESSAGE}" if args.jgu else "\no_think",
             max_tokens=4096
         ),
         "nemotron-super-49b-1.5-reasoning": ChatCompletionSampler(
             model="Nemotron Super 49B",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
             max_tokens=16384
         ),
         "gemma3-27b": ChatCompletionSampler(
             model="Gemma3 27B",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
             max_tokens=4096
         ),
         "qwen2.5-coder-32b": ChatCompletionSampler(
             model="Qwen2.5 Coder 32B",
+            system_message=JGU_SYSTEM_MESSAGE_CODER if args.jgu else None,
             max_tokens=4096
         ),
         "qwen3-coder-30b": ChatCompletionSampler(
             model="Qwen3 Coder 30B",
+            system_message=JGU_SYSTEM_MESSAGE_CODER if args.jgu else None,
             max_tokens=4096
         ),
         "qwen3-235b": ChatCompletionSampler(
             model="Qwen3 235B",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
             max_tokens=4096
         ),
         "qwen3-235b-thinking": ChatCompletionSampler(
-            model="Qwen3 235B (Reasoning)",
+            model="Qwen3 235B Thinking",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
             max_tokens=16384
         ),
         "qwen3-235b-thinking-long": ChatCompletionSampler(
-            model="Qwen3 235B (Reasoning)",
+            model="Qwen3 235B Thinking",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
             max_tokens=32768
-        ),
-        "qwen3-235b-thinking-long": ChatCompletionSampler(
-            model="Qwen3 235B (Reasoning)",
-            max_tokens=16384
         ),
         "gpt-oss-120b-low": ChatCompletionSampler(
             model="GPT OSS 120B",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
             max_tokens=16384,
             reasoning_effort="low"
         ),
         "gpt-oss-120b": ChatCompletionSampler(
             model="GPT OSS 120B",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
             max_tokens=16384
         ),
         "gpt-oss-120b-high": ChatCompletionSampler(
             model="GPT OSS 120B",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
             max_tokens=16384,
             reasoning_effort="high"
+        ),
+        "glm-4.5-355b": ChatCompletionSampler(
+            model="GLM-4.5 355B",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
+            max_tokens=4096
+        ),
+        "glm-4.5-355b-thinking": ChatCompletionSampler(
+            model="GLM-4.5 355B Thinking",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
+            max_tokens=16384
+        ),
+        "glm-4.5-355b-thinking-long": ChatCompletionSampler(
+            model="GLM-4.5 355B Thinking",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
+            max_tokens=32768
         ),
     }
 

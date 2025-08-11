@@ -10,6 +10,7 @@ parser = argparse.ArgumentParser(description='Run LLM evaluation multiple times 
 parser.add_argument('--api-url', required=True, help='OpenAI base URL')
 parser.add_argument('--api-key', required=True, help='OpenAI API key')
 parser.add_argument('--model', required=True, help='Model name')
+parser.add_argument("--jgu", action="store_true", help="Set JGU system prompt")
 parser.add_argument('--num-samples', type=int, required=True, help='Number of examples to sample')
 parser.add_argument('--num-runs', type=int, required=True, help='Number of runs')
 args = parser.parse_args()
@@ -23,8 +24,11 @@ for run in range(args.num_runs):
     env = os.environ.copy()
     env['OPENAI_BASE_URL'] = args.api_url
     env['OPENAI_API_KEY'] = args.api_key
+    cmdline = ['python3', '-m', 'simple-evals.simple_evals', '--model', args.model, '--examples', str(args.num_samples)]
+    if args.jgu:
+        cmdline.append('--jgu')
     subprocess.run(
-        ['python3', '-m', 'simple-evals.simple_evals', '--model', args.model, '--examples', str(args.num_samples)],
+        cmdline,
         env=env,
         check=True
     )
