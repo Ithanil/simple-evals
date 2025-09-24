@@ -20,7 +20,7 @@ from .sampler.o_chat_completion_sampler import OChatCompletionSampler
 from .sampler.responses_sampler import ResponsesSampler
 from .sampler.claude_sampler import ClaudeCompletionSampler, CLAUDE_SYSTEM_MESSAGE_LMSYS
 
-JGU_SYSTEM_MESSAGE="You are a general-purpose assistant hosted entirely on-site at the JGU in Mainz. You are not trained on internal data. Prioritize factual accuracy: state uncertainties, ask clarifying questions. Use tools only if they are beneficial, otherwise ignore them silently."
+JGU_SYSTEM_MESSAGE="You are a general-purpose assistant hosted entirely on-site at the JGU in Mainz. You are not trained on internal data. Prioritize unbiased factual accuracy: state uncertainties, ask clarifying questions. Use tools only if they are beneficial, otherwise ignore them silently.\nCurrent date: 2025-08-01"
 JGU_SYSTEM_MESSAGE_CODER=JGU_SYSTEM_MESSAGE.replace("general-purpose", "coding")
 
 def main():
@@ -145,6 +145,11 @@ def main():
             system_message=CLAUDE_SYSTEM_MESSAGE_LMSYS,
         ),
        # custom models:
+        "auto": ChatCompletionSampler(
+            model="auto",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
+            max_tokens=16384
+        ),
         "nemotron-super-49b": ChatCompletionSampler(
             model="Nemotron Super 49B",
             system_message=f"detailed thinking off\n{JGU_SYSTEM_MESSAGE}" if args.jgu else "detailed thinking off",
@@ -205,6 +210,33 @@ def main():
             system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
             max_tokens=32768
         ),
+        "qwen3-4b": ChatCompletionSampler(
+            model="Qwen3 4B",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
+            max_tokens=8192
+        ),
+        "nemotron-nano-9b-nothink": ChatCompletionSampler(
+            model="Nemotron Nano 9B NoThink",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
+            max_tokens=8192
+        ),
+        "gpt-oss-20b-low": ChatCompletionSampler(
+            model="GPT OSS 20B",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
+            max_tokens=16384,
+            reasoning_effort="low"
+        ),
+        "gpt-oss-20b": ChatCompletionSampler(
+            model="GPT OSS 20B",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
+            max_tokens=16384
+        ),
+        "gpt-oss-20b-high": ChatCompletionSampler(
+            model="GPT OSS 20B",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
+            max_tokens=16384,
+            reasoning_effort="high"
+        ),
         "gpt-oss-120b-low": ChatCompletionSampler(
             model="GPT OSS 120B",
             system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
@@ -218,6 +250,23 @@ def main():
         ),
         "gpt-oss-120b-high": ChatCompletionSampler(
             model="GPT OSS 120B",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
+            max_tokens=16384,
+            reasoning_effort="high"
+        ),
+        "gpt-oss-120b-test-low": ChatCompletionSampler(
+            model="GPT OSS 120B (Test)",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
+            max_tokens=16384,
+            reasoning_effort="low"
+        ),
+        "gpt-oss-120b-test": ChatCompletionSampler(
+            model="GPT OSS 120B (Test)",
+            system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
+            max_tokens=16384
+        ),
+        "gpt-oss-120b-test-high": ChatCompletionSampler(
+            model="GPT OSS 120B (Test)",
             system_message=JGU_SYSTEM_MESSAGE if args.jgu else None,
             max_tokens=16384,
             reasoning_effort="high"
